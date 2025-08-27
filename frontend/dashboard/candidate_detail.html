@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCorp AI - Candidate Details</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkE2REIwIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTUtMTAtNXpNMjAgMTdsMTAgNSAxMC01TTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-color: #2A6DB0;
+            --secondary-color: #5b7ca3;
+            --accent-color: #e9ecef;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        /* Navigation Styles */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2A6DB0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #1A4B7E;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            stroke: #2A6DB0;
+            transition: stroke 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            stroke: #1A4B7E;
+        }
+
+        .company-name {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            margin-top: 80px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: #ffffff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            left: 260px;
+            top: 88px;
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .sidebar-toggle.collapsed {
+            left: 10px;
+            transform: rotate(180deg);
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .sidebar-link {
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: #2A6DB0;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+
+        /* Candidate Details Specific Styles */
+        .detail-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .video-download-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .video-download-btn:hover {
+            background: #465d7a;
+            color: white;
+        }
+
+        .response-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+        }
+
+        .response-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .response-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--accent-color);
+        }
+
+        .response-table tr:hover {
+            background-color: rgba(42, 109, 176, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .sidebar {
+                z-index: 1001;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            INPACT
+        </a>
+        <span class="company-name">TechCorp AI Interviews</span>
+    </nav>
+
+    <button class="sidebar-toggle" id="sidebarToggle">❮</button>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-links">
+                <a href="{% url 'high_scores' %}" class="sidebar-link active">Candidates</a>
+                <a href="{% url 'manage_evaluation_criteria' %}" class="sidebar-link">Evaluation</a>
+                <a href="{% url 'question_manage_criteria' %}" class="sidebar-link ">Questions</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="container">
+                <header class="mb-4">
+                    <h1>{{ candidate.name }} - Detailed Analysis</h1>
+                </header>
+
+                <div class="detail-card">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Candidate Profile</h5>
+                            <p><strong>Email:</strong> {{ candidate.email }}</p>
+                            <p><strong>Resume:</strong> <a href="{{ candidate.resume_path.url }}" class="resume-link" target="_blank">View Resume</a></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Interview Recordings</h5>
+                            {% for interview in interviews %}
+                                {% if interview.video_call_path %}
+                                <div class="mt-2">
+                                    <a href="{{ interview.video_call_path }}" class="video-download-btn" download>
+                                        Interview {{ forloop.counter }}
+                                    </a>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {% for interview in interviews %}
+                <div class="detail-card">
+                    <h4>{{ interview.job_role }} Interview</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Total Score:</strong> {{ interview.total_score }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Date:</strong> {{ interview.interview_date|date:"M d, Y" }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <p><strong>Time:</strong> {{ interview.interview_date|time:"H:i" }}</p>
+                        </div>
+                    </div>
+                    <h5>Question Breakdown</h5>
+                    <table class="response-table">
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Response</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for response in interview.responses.all %}
+                            <tr>
+                                <td>{{ response.question.question_text }}</td>
+                                <td>{{ response.response_text|truncatechars:80 }}</td>
+                                <td>{{ response.score }}/100</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3">No responses recorded</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle Functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const mainContent = document.querySelector('.main-content');
+            
+            sidebar.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+            
+            mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '0' : '250px';
+        }
+
+        document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+
+        // Responsive adjustments
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < 768) {
+                document.querySelector('.sidebar').classList.add('collapsed');
+                document.querySelector('.main-content').style.marginLeft = '0';
+            } else {
+                document.querySelector('.sidebar').classList.remove('collapsed');
+                document.querySelector('.main-content').style.marginLeft = '250px';
+            }
+        });
+    </script>
+</body>
+</html>

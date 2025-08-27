@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechCorp AI - Leaderboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMkE2REIwIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTUtMTAtNXpNMjAgMTdsMTAgNSAxMC01TTIgMTJsMTAgNSAxMC01Ii8+PC9zdmc+">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-color: #2A6DB0;
+            --secondary-color: #5b7ca3;
+            --accent-color: #e9ecef;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navigation Styles */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+            background: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2A6DB0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #1A4B7E;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            stroke: #2A6DB0;
+            transition: stroke 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            stroke: #1A4B7E;
+        }
+        .company-name {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: flex;
+            margin-top: 80px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: #ffffff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            position: fixed;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            z-index: 999;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            left: 260px;
+            top: 88px;
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .sidebar-toggle.collapsed {
+            left: 10px;
+            transform: rotate(180deg);
+        }
+
+        .sidebar-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .sidebar-link {
+            padding: 12px 20px;
+            border-radius: 6px;
+            color: #2A6DB0;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            margin-left: 250px;
+            transition: margin 0.3s ease;
+        }
+
+        /* Leaderboard Content Styles */
+        .container {
+            max-width: 1200px;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .score-pill {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+            
+            .sidebar {
+                z-index: 1001;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+            INPACT
+        </a>
+        <span class="company-name">TechCorp AI Interviews</span>
+    </nav>
+
+    <button class="sidebar-toggle" id="sidebarToggle">❮</button>
+
+    <div class="dashboard-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-links">
+                <a href="{% url 'high_scores' %}" class="sidebar-link active" onclick="showPage('candidates')">Candidates</a>
+                <a href="{% url 'manage_evaluation_criteria' %}" class="sidebar-link" onclick="showPage('evaluation')">Evaluation</a>
+                <a href="{% url 'question_manage_criteria' %}" class="sidebar-link" onclick="showPage('questions')">Questions</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="container">
+                <header class="page-header">
+                    <h1>Candidate Leaderboard</h1>
+                </header>
+
+                <div class="leaderboard-container">
+                    {% for candidate in candidates %}
+                    <div class="candidate-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h3 class="mb-2">{{ candidate.name }}</h3>
+                                <div class="d-flex gap-4">
+                                    <div>
+                                        <span class="text-muted">Resume Score:</span>
+                                        <span class="score-pill">{{ candidate.resume_score|default:"N/A" }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted">Overall Score:</span>
+                                        <span class="score-pill">{{ candidate.overall_score|default:"N/A" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="{% url 'candidate_detail' candidate.candidate_id %}" 
+                               class="btn btn-primary">
+                                View Details →
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <h3>No Candidates Found</h3>
+                        <p class="text-muted">No candidates have completed interviews yet.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="candidates-grid" id="candidatesList">
+                    <!-- Candidate cards will be dynamically inserted here -->
+                <!-- </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle Functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const mainContent = document.querySelector('.main-content');
+            
+            sidebar.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+            
+            mainContent.style.marginLeft = sidebar.classList.contains('collapsed') ? '0' : '250px';
+        }
+
+        document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+
+        // Responsive adjustments
+        window.addEventListener('resize', () => {
+            if (window.innerWidth < 768) {
+                document.querySelector('.sidebar').classList.add('collapsed');
+                document.querySelector('.main-content').style.marginLeft = '0';
+            } else {
+                document.querySelector('.sidebar').classList.remove('collapsed');
+                document.querySelector('.main-content').style.marginLeft = '250px';
+            }
+        });
+    </script>
+</body>
+</html>
